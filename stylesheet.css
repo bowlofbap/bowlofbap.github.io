@@ -1,0 +1,51 @@
+
+body{
+	background-color: #AED6F1;
+	height: 800px;
+}
+
+@font-face{
+	font-family: TestFont;
+	src: url(GeosansLight.ttf);
+}
+.fontPreload{    position:absolute;    left:-100px;}
+
+canvas{
+	margin-top: -40vh;
+}
+
+
+h1{
+	margin:auto;
+	margin-top: 10vh;
+	font-family:TestFont;
+	font-size: 500%;
+	color:snow;
+	text-align: center;
+}
+
+#current{
+	margin-top: 50px;
+	font-family:TestFont;
+	font-size: 200%;
+	position: absolute; right: calc(50vw + 150px);
+	display: inline;
+	color:snow;
+}
+
+#score{
+	margin-top: 50px;
+	font-family:TestFont;
+	font-size: 200%;
+	position: absolute; left: calc(50vw + 150px);
+	display: inline;
+	color:snow;
+}
+
+#time{
+	margin-top: 120px;
+	font-family:TestFont;
+	font-size: 200%;
+	position: absolute; right: calc(50vw + 150px);
+	color:snow;
+}
