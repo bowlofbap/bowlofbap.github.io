@@ -3,7 +3,6 @@
 var border;
 var board;
 var numbers = new Array(6);
-var NUMBERS = [2, 3, 5, 6, 7];
 var holder = [];
 var screenWidth = 600;
 var screenHeight = 800;
@@ -15,12 +14,14 @@ var totalScore = 0;
 var pulse = false;
 var timeLeft = 90;
 var board1;
+var matches = 0;
 
+var tvMatches;
 var title;
 var current;
 var score;
-var tvtime;
-let MAXCHAIN = 10
+var tvChain;
+let MAXCHAIN = 5
 let ROWNUM = 6;
 
 let PRIMARY = 0x234567
@@ -33,14 +34,17 @@ let SIZEMAP = {
 	'labels' : 0.06
 }
 
-let COLORMAP = {
-	'2': '#1f87b6',
-	'3': '#31aee6',
-	'5': '#7693ff',
-	'6': '#a094e8',
-	'7': '#7A66EB'
-}
+let COLORMAP = [];
 
+/*)
+let COLORMAP = {
+	'1': '#1f87b6',
+	'2': '#31aee6',
+	'3': '#7693ff',
+	'4': '#a094e8',
+	'5': '#7A66EB'
+}
+*/
 
 var GameState = {
 	preload: function(){
@@ -90,11 +94,13 @@ var GameState = {
 
 		let labelSize = SIZEMAP['labels']*game.world.width;
 
-		current = this.game.add.text(game.world.width*0.1,game.world.height*.125, "Current: 0", {font: labelSize+'px TestFont', fill: '#ffffff'});
+		current = this.game.add.text(game.world.width*0.1,game.world.height*.2, "Current: 0", {font: labelSize+'px TestFont', fill: '#ffffff'});
 
 		score = this.game.add.text(game.world.width*0.6,game.world.height*.125, "Score: 0", {font: labelSize+'px TestFont', fill: '#ffffff'});
 
-		tvtime = this.game.add.text(game.world.width*0.1,game.world.height*.2, "0:00", {font: labelSize+'px TestFont', fill: '#ffffff'});
+		tvMatches = this.game.add.text(game.world.width*0.6,game.world.height*.2, "Matches Left: " + (5 - matches), {font: labelSize+'px TestFont', fill: '#ffffff'});
+
+		tvChain = this.game.add.text(game.world.width*0.1,game.world.height*.125, "Max Chain: " + MAXCHAIN, {font: labelSize+'px TestFont', fill: '#ffffff'});
 
 		for (var x = 0; x < ROWNUM; x++){
 			numbers[x] = new Array(ROWNUM);
@@ -208,8 +214,14 @@ function clearAllBlocks(){
 			var holderx = holder[x].dx;
 			var holdery = holder[x].dy;
 			holder[x].destroy();
-			var newBlock = spawnBlock(holderx, holdery);
+			var newBlock = spawnBlock(holderx, holdery,Math.sqrt(getTotal()));
 		}
+		matches +=1;
+		if (matches % 5 == 0){
+			MAXCHAIN += 1;
+		}
+		tvMatches.text = "Matches Left: "+(5-(matches%5));
+		tvChain.text = "Max Chain: "+MAXCHAIN;
 		hover = numbers[hover.dx][hover.dy];
 		hoverBlock(hover);
 	}
@@ -231,16 +243,25 @@ function getTotal(){
 	return tot;
 }
 
-function spawnBlock(x, y){
-	var newNum = NUMBERS[getRandomIntInclusive(0,NUMBERS.length-1)];
+function spawnBlock(x, y, z){
+	var newNum = getRandomIntInclusive(1,MAXCHAIN);
+	if (z){
+		newNum = z + 1;
+	}
 	//var newBlock = game.add.sprite(board1.x + gameSize/6*x, board1.y + gameSize/6*y,newNum+'image');
 
 	var bmd = game.add.bitmapData(gameSize/ROWNUM, gameSize/ROWNUM);
 	 
 	bmd.ctx.beginPath();
 	bmd.ctx.rect(0, 0, gameSize/ROWNUM, gameSize/ROWNUM);
-	bmd.ctx.fillStyle = COLORMAP[newNum+''];
-	console.log(COLORMAP[newNum+''],newNum);
+	var fillStyle;
+	if (!((''+newNum) in COLORMAP)){
+		COLORMAP[newNum+''] =  generateRandomColor();
+	}
+	fillStyle = COLORMAP[newNum + ''];
+	bmd.ctx.fillStyle = fillStyle;//COLORMAP[newNum+''];
+	console.log(bmd.ctx.fillStyle, newNum);
+	//console.log(COLORMAP[newNum+''],newNum);
 	bmd.ctx.fill();
 	newBlock = game.add.sprite(board1.x + gameSize/ROWNUM*x, board1.y + gameSize/ROWNUM*y, bmd);
 
@@ -257,6 +278,18 @@ function spawnBlock(x, y){
 	return newBlock;
 }
 
+function generateRandomColor(){
+	var r = (parseInt)((getRandomIntInclusive(0,255)+255)/2);
+	var b = (parseInt)((getRandomIntInclusive(0,255)+255)/2);
+	var g = (parseInt)((getRandomIntInclusive(0,255)+255)/2);
+	var test = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+	console.log(test);
+	return test;
+}
+
+function rgbToHex(r, g, b){
+	return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
 function primaryBlock(block){
 	block.tint = PRIMARY;
 	current.text = "Current: "+getTotal() + " (" + holder.length + ")";
