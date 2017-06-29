@@ -193,37 +193,39 @@ function clearAllBlocks(){
 		deHover(holder[x]);
 	}
 	if (holder.length > 1 && Number.isInteger(Math.sqrt(getTotal()))){
-		let phase1 = (holder.length-2)/(MAXCHAIN-2);
-		let phase2 = Math.pow(3,phase1);
-		let phase3 = Math.sqrt(getTotal());
-		let phase4 = Math.pow(phase3,phase2);
-		let plusScore = parseInt(phase4);
+		if (holder.length > Math.sqrt(getTotal())-2){
+			let phase1 = (holder.length-2)/(MAXCHAIN-2);
+			let phase2 = Math.pow(3,phase1);
+			let phase3 = Math.sqrt(getTotal());
+			let phase4 = Math.pow(phase3,phase2);
+			let plusScore = parseInt(phase4);
 
-		var addedTime = 1000*(2+Math.pow(18,((plusScore-2) / (Math.pow(7,3)-2))));
+			var addedTime = 1000*(2+Math.pow(18,((plusScore-2) / (Math.pow(7,3)-2))));
 
-		console.log(plusScore,addedTime);
-		if (addedTime<2000){
-			addedTime=2000;
+			console.log(plusScore,addedTime);
+			if (addedTime<2000){
+				addedTime=2000;
+			}
+
+
+			totalScore += plusScore;
+
+			score.text = "Score: " + totalScore;
+			for (var x = 0; x < holder.length; x++){
+				var holderx = holder[x].dx;
+				var holdery = holder[x].dy;
+				holder[x].destroy();
+				var newBlock = spawnBlock(holderx, holdery,Math.sqrt(getTotal()));
+			}
+			matches +=1;
+			if (matches % 5 == 0){
+				MAXCHAIN += 1;
+			}
+			tvMatches.text = "Matches Left: "+(5-(matches%5));
+			tvChain.text = "Max Chain: "+MAXCHAIN;
+			hover = numbers[hover.dx][hover.dy];
+			hoverBlock(hover);
 		}
-
-
-		totalScore += plusScore;
-
-		score.text = "Score: " + totalScore;
-		for (var x = 0; x < holder.length; x++){
-			var holderx = holder[x].dx;
-			var holdery = holder[x].dy;
-			holder[x].destroy();
-			var newBlock = spawnBlock(holderx, holdery,Math.sqrt(getTotal()));
-		}
-		matches +=1;
-		if (matches % 5 == 0){
-			MAXCHAIN += 1;
-		}
-		tvMatches.text = "Matches Left: "+(5-(matches%5));
-		tvChain.text = "Max Chain: "+MAXCHAIN;
-		hover = numbers[hover.dx][hover.dy];
-		hoverBlock(hover);
 	}
 	current.text = "Current: 0";
 	holder = [];
