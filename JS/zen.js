@@ -124,14 +124,6 @@ Zen.prototype = {
 		game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).onDown.add(this.enterFunction, this);
 		game.input.keyboard.addKey(Phaser.Keyboard.ESC).onDown.add(this.escFunction, this);
 
-		/*
-		game.input.keyboard.onDownCallback = function(){
-			if (game.input.keyboard.event.keyCode == 13||game.input.keyboard.event.keyCode == 32){
-			}else{
-			}
-		}
-	*/
-
 	},
 	escFunction: function(){
 		if (choosing){
@@ -241,7 +233,6 @@ Zen.prototype = {
 		if (z){
 			newNum = z + 1;//to spawn the number
 		}
-		//var newBlock = game.add.sprite(board1.x + gameSize/6*x, board1.y + gameSize/6*y,newNum+'image');
 
 		var bmd = game.add.bitmapData(gameSize/ROWNUM, gameSize/ROWNUM);
 		 
@@ -272,7 +263,7 @@ Zen.prototype = {
 		for (var x = 0; x < holder.length; x++){
 			this.deHover(holder[x]);
 		}
-		if (holder.length > 1 && Number.isInteger(Math.sqrt(this.getTotal()))){
+		if (holder.length > 1 && Number.isInteger(Math.sqrt(this.getTotal())) && !this.checkAllSame()){
 			if (holder.length > Math.sqrt(this.getTotal())-2){
 				let phase1 = (holder.length-2)/(MAXCHAIN-2);
 				let phase2 = Math.pow(3,phase1);
@@ -309,6 +300,19 @@ Zen.prototype = {
 		}
 		current.text = "Current: 0";
 		holder = [];
+	},
+	checkAllSame: function(){
+		var check = 0;
+		var lastNum = 0;
+		for (var x = 0; x< holder.length; x++){
+			if (holder[x].value == lastNum){
+				check += 1;
+			}
+			lastNum = holder[x].value;
+		}
+		console.log(check, holder.length, check == holder.length ? true : false);
+		return check == holder.length-1 ? true : false;
+
 	},
 	clearBlocks: function(){
 		for (var x = 0; x < holder.length; x++){
