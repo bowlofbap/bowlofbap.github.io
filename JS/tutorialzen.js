@@ -129,11 +129,15 @@ TutorialZen.prototype = {
 
 			this.spawnBoard(3);
 		}else if (page == 3){
-			text = game.add.text(game.world.width/2,game.world.height/4, "One more thing: Your chain must have at least one less than the perfect square's root. So you wouldn't be able to match any of these 12's for 36 because you would need a length of at least 5.", {font: SIZEMAP['body']*game.world.width+'px TestFont', fill: '#ffffff', wordWrap: true, wordWrapWidth: game.world.width});
+			this.disableGame();
+			text = game.add.text(game.world.width/2,game.world.height/4, "One more thing: Your chain must have at least one less than the perfect square's root. So you wouldn't be able to match any of these 12's for 36 because you would need a length of at least 5.\n\n Press Space whenever you want to start the game!", {font: SIZEMAP['body']*game.world.width+'px TestFont', fill: '#ffffff', wordWrap: true, wordWrapWidth: game.world.width});
 			text.anchor.setTo(0.5,0.5);
 			textLayer.addChild(text);
 
 			this.spawnBoard(11);
+			this.deHover(hover);
+			choosing = false;
+			game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).onDown.add(this.startGame, this);
 		}
 	},
 	clearBlocks: function(){
@@ -159,6 +163,10 @@ TutorialZen.prototype = {
 
 				//enable the thing to move on
 				//show continue button
+				text = game.add.text(game.world.width/2,board1.y+board1.height+game.world.width*0.1, "Good work! Press Space to continue.", {font: SIZEMAP['body']*game.world.width+'px TestFont', fill: '#ffffff', wordWrap: true, wordWrapWidth: game.world.width});
+				text.anchor.setTo(0.5,0.5);
+				textLayer.addChild(text);
+				game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).onDown.add(this.rightFunction, this);
 			}
 		}
 		holder = [];
@@ -330,5 +338,5 @@ TutorialZen.prototype = {
 	},
 }
 
-game.state.add('Tutorial', Tutorial);
-game.state.start('Tutorial');
+game.state.add('TutorialZen', TutorialZen);
+game.state.start('TutorialZen');

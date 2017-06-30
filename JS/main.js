@@ -20,8 +20,8 @@ var GameState = function() {
 	 var current;
 	 var score;
 	 var tvChain;
-	 MAXCHAIN = 5
-	 ROWNUM = 6;
+	 MAXCHAIN = 6
+	 ROWNUM = 7;
 
 	 PRIMARY = 0x234567
 	 HOVER = 0x808080;
