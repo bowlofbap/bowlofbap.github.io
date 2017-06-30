@@ -1,4 +1,4 @@
-var GameState = function() {
+var Zen = function() {
 	 screenWidth = 600;
 	 screenHeight = 800;
 	 var border;
@@ -12,18 +12,16 @@ var GameState = function() {
 	 hover = null;
 	 totalScore = 0;
 	 pulse = false;
-	 realStartTime = 90;
-	 var startTime;
+	 timeLeft = 90;
 	 matches = 0;
-	 var playing = true;
-	 var endScreen;
 
+	 var tvMatches;
 	 var title;
 	 var current;
 	 var score;
-	 var tvTime;
-	 MAXCHAIN = 7;
-	 ROWNUM = 6;
+	 var tvChain;
+	 MAXCHAIN = 6
+	 ROWNUM = 7;
 
 	 PRIMARY = 0x234567
 	 HOVER = 0x808080;
@@ -32,11 +30,11 @@ var GameState = function() {
 
 	 SIZEMAP = {
 		'title' : 0.125,
-		'labels' : 0.06,
-		'endScreen' : 0.085
+		'labels' : 0.06
 	}
 	COLORMAP = [];
 };
+
 
 /*)
 let COLORMAP = {
@@ -48,7 +46,7 @@ let COLORMAP = {
 }
 */
 
-GameState.prototype = {
+Zen.prototype = {
 	preload: function(){
 		this.game.scale.refresh();
 		Phaser.Canvas.setImageRenderingCrisp(this.game.canvas)  
@@ -61,16 +59,12 @@ GameState.prototype = {
 
 	},
 	create: function(){
+		/*
+		this.background = this.game.add.sprite(0,0, 'background')
+		this.background.width = 500;
+		this.background.height = 500;
+		*/
 
-		var me = this;
-		playing = true;
-	 	startTime = realStartTime;
-	    me.startTime = new Date();
-	    me.totalTime = startTime;
-	    me.timeElapsed = 0;
-	    me.gameTimer = game.time.events.loop(100, function(){
-	    	me.updateTimer();
-	    });
 
 		title = this.game.add.text(game.world.width/2,SIZEMAP['title']*game.world.width/2, "S Q U A R E S", {font: SIZEMAP['title']*game.world.width+'px TestFont', fill: '#ffffff'});
 		title.anchor.setTo(0.5,0.5);
@@ -104,7 +98,9 @@ GameState.prototype = {
 
 		score = this.game.add.text(game.world.width*0.6,game.world.height*.125, "Score: 0", {font: labelSize+'px TestFont', fill: '#ffffff'});
 
-		tvTime = this.game.add.text(game.world.width*0.1,game.world.height*.125, "0:00", {font: labelSize+'px TestFont', fill: '#ffffff'});
+		tvMatches = this.game.add.text(game.world.width*0.6,game.world.height*.2, "Matches Left: " + (5 - matches), {font: labelSize+'px TestFont', fill: '#ffffff'});
+
+		tvChain = this.game.add.text(game.world.width*0.1,game.world.height*.125, "Max Chain: " + MAXCHAIN, {font: labelSize+'px TestFont', fill: '#ffffff'});
 
 		for (var x = 0; x < ROWNUM; x++){
 			numbers[x] = new Array(ROWNUM);
@@ -128,76 +124,6 @@ GameState.prototype = {
 		game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).onDown.add(this.enterFunction, this);
 		game.input.keyboard.addKey(Phaser.Keyboard.ESC).onDown.add(this.escFunction, this);
 
-	 
-
-	},
-	update: function(){
-		if (choosing && hover != null){
-			if (pulse){
-				hover.alpha+=0.01;
-				if (hover.alpha >= 1){pulse = false;}
-			}else{
-				hover.alpha-=0.01;
-				if (hover.alpha <= 0.75){pulse = true;}
-			}
-		}
-		if(this.timeElapsed >= startTime){
-			this.endGame();
-		}
-	},
-	updateTimer: function(){
- 
-	    var me = this;
-	 
-	    var currentTime = new Date();
-	    var timeDifference = me.startTime.getTime() - currentTime.getTime();
-	 
-	    //Time elapsed in seconds
-	    me.timeElapsed = Math.abs(timeDifference / 1000);
-	 
-	    //Time remaining in seconds
-	    var timeRemaining = startTime - me.timeElapsed; 
-	 
-	    //Convert seconds into minutes and seconds
-	    var minutes = Math.floor(timeRemaining / 60);
-	    var seconds = Math.floor(timeRemaining) - (60 * minutes);
-	 
-	    //Display minutes, add a 0 to the start if less than 10
-	    var result = (minutes < 10) ? "0" + minutes : minutes; 
-	 
-	    //Display seconds, add a 0 to the start if less than 10
-	    result += (seconds < 10) ? ":0" + seconds : ":" + seconds; 
-	 
-	    tvTime.text = result;
-	 
-	},	
-	endGame: function(){
-		var width = screenWidth // example;
-		var height = screenHeight // example;
-		var bmd = game.add.bitmapData(width, height);
-		 
-		bmd.ctx.beginPath();
-		bmd.ctx.rect(0, 0, width, height);
-		bmd.ctx.fillStyle = '#AED6F1';
-		bmd.ctx.fill();
-		endScreen = game.add.sprite(0,0, bmd);
-		endScreen.anchor.setTo(0, 0);
-
-		playing = false;
-
-		text = game.add.text(game.world.width/2,game.world.height/4, "Your score was: "+totalScore+"\n\nPress Space or Enter to play again!", {font: SIZEMAP['endScreen']*game.world.width+'px TestFont', fill: '#ffffff', wordWrap: true, wordWrapWidth: game.world.width});
-		text.anchor.setTo(0.5,0.5);
-		endScreen.addChild(text);
-		game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).onDown.add(function(){this.restartGameState(); game.state.restart();},this);
-		game.input.keyboard.addKey(Phaser.Keyboard.ENTER).onDown.add(function(){this.restartGameState(); game.state.restart();},this);
-	},
-	restartGameState: function(){
-		 choosing = false;
-		 hover = null;
-		 totalScore = 0;
-		 startTime = realStartTime;
-		 pulse = false;
-		 playing = true;
 	},
 	escFunction: function(){
 		if (choosing){
@@ -291,12 +217,22 @@ GameState.prototype = {
 		}
 	},
 
+	update: function(){
+		if (choosing && hover != null){
+			if (pulse){
+				hover.alpha+=0.01;
+				if (hover.alpha >= 1){pulse = false;}
+			}else{
+				hover.alpha-=0.01;
+				if (hover.alpha <= 0.75){pulse = true;}
+			}
+		}
+	},
 	spawnBlock: function(x, y, z){
-		var newNum = this.getRandomIntInclusive(2,MAXCHAIN+1);
+		var newNum = this.getRandomIntInclusive(2,MAXCHAIN);
 		if (z){
 			newNum = z + 1;//to spawn the number
 		}
-		//var newBlock = game.add.sprite(board1.x + gameSize/6*x, board1.y + gameSize/6*y,newNum+'image');
 
 		var bmd = game.add.bitmapData(gameSize/ROWNUM, gameSize/ROWNUM);
 		 
@@ -327,35 +263,56 @@ GameState.prototype = {
 		for (var x = 0; x < holder.length; x++){
 			this.deHover(holder[x]);
 		}
-		if (holder.length > 1 && Number.isInteger(Math.sqrt(this.getTotal()))){
-			let phase1 = (holder.length-2)/(MAXCHAIN-1);
-			let phase2 = Math.pow(3,phase1);
-			let phase3 = Math.sqrt(this.getTotal());
-			let phase4 = Math.pow(phase3,phase2);
-			let plusScore = parseInt(phase4);
+		if (holder.length > 1 && Number.isInteger(Math.sqrt(this.getTotal())) && !this.checkAllSame()){
+			if (holder.length > Math.sqrt(this.getTotal())-2){
+				let phase1 = (holder.length-2)/(MAXCHAIN-2);
+				let phase2 = Math.pow(3,phase1);
+				let phase3 = Math.sqrt(this.getTotal());
+				let phase4 = Math.pow(phase3,phase2);
+				let plusScore = parseInt(phase4);
 
-			//var addedTime = 1000*(2+Math.pow(18,((plusScore-2) / (Math.pow(7,3)-2))));
-			var addedTime = 1000*(Math.pow(1.3,Math.log(plusScore,10)));
-			console.log(addedTime);
-			if (addedTime<1000){
-				addedTime=1000;
+				var addedTime = 1000*(2+Math.pow(18,((plusScore-2) / (Math.pow(7,3)-2))));
+
+				console.log(plusScore,addedTime);
+				if (addedTime<2000){
+					addedTime=2000;
+				}
+
+
+				totalScore += plusScore;
+
+				score.text = "Score: " + totalScore;
+				for (var x = 0; x < holder.length; x++){
+					var holderx = holder[x].dx;
+					var holdery = holder[x].dy;
+					holder[x].destroy();
+					var newBlock = this.spawnBlock(holderx, holdery,Math.sqrt(this.getTotal()));
+				}
+				matches +=1;
+				if (matches % 5 == 0){
+					MAXCHAIN += 1;
+				}
+				tvMatches.text = "Matches Left: "+(5-(matches%5));
+				tvChain.text = "Max Chain: "+MAXCHAIN;
+				hover = numbers[hover.dx][hover.dy];
+				this.hoverBlock(hover);
 			}
-
-			totalScore += plusScore;
-			startTime += addedTime/1000;
-
-			score.text = "Score: " + totalScore;
-			for (var x = 0; x < holder.length; x++){
-				var holderx = holder[x].dx;
-				var holdery = holder[x].dy;
-				holder[x].destroy();
-				var newBlock = this.spawnBlock(holderx, holdery);
-			}
-			hover = numbers[hover.dx][hover.dy];
-			this.hoverBlock(hover);
 		}
 		current.text = "Current: 0";
 		holder = [];
+	},
+	checkAllSame: function(){
+		var check = 0;
+		var lastNum = 0;
+		for (var x = 0; x< holder.length; x++){
+			if (holder[x].value == lastNum){
+				check += 1;
+			}
+			lastNum = holder[x].value;
+		}
+		console.log(check, holder.length, check == holder.length ? true : false);
+		return check == holder.length-1 ? true : false;
+
 	},
 	clearBlocks: function(){
 		for (var x = 0; x < holder.length; x++){
@@ -378,9 +335,9 @@ GameState.prototype = {
 		return tot;
 	},
 	generateRandomColor: function(){
-		var r = (parseInt)((this.getRandomIntInclusive(0,255)+255)/2);
-		var b = (parseInt)((this.getRandomIntInclusive(0,255)+255)/2);
-		var g = (parseInt)((this.getRandomIntInclusive(0,255)+255)/2);
+		var r = (parseInt)((this.getRandomIntInclusive(0,255)+235)/2);
+		var b = (parseInt)((this.getRandomIntInclusive(0,255)+235)/2);
+		var g = (parseInt)((this.getRandomIntInclusive(0,255)+235)/2);
 		var test = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
 		return test;
 	},

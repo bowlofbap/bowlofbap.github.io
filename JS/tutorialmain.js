@@ -1,6 +1,4 @@
-
-
-var game = new Phaser.Game(600, 800, Phaser.AUTO,'',null,true), TutorialZen = function() {
+TutorialMain = function() {
 	screenWidth = 600;
 	screenHeight = 800;
 	pageNumber = 0;
@@ -26,13 +24,15 @@ var game = new Phaser.Game(600, 800, Phaser.AUTO,'',null,true), TutorialZen = fu
 	 SELECTED = 0x404040;
 	 DESELECTED = 0xFFFFFF;
 
+	COLORMAP = [];
 
 };
 
-TutorialZen.prototype = {
+TutorialMain.prototype = {
 	preload: function(){ 
 		//Phaser.Canvas.setImageRenderingCrisp(this.game.canvas)  
 		 game.load.script('GameState',  'JS/main.js');
+
    	},
 	create: function(){
 		game.input.keyboard.addKey(Phaser.Keyboard.RIGHT).onDown.add(this.rightFunction, this);
@@ -59,8 +59,9 @@ TutorialZen.prototype = {
 	},
 
 	startGame: function(){
-				game.state.add("GameState",GameState);
-			    game.state.start("GameState");
+		game.state.add("GameState",GameState);
+	    game.state.start("GameState");
+
 	},
 
 	rightFunction: function(){
@@ -115,12 +116,12 @@ TutorialZen.prototype = {
 			textLayer.addChild(text);
 			game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).onDown.add(this.startGame, this);
 		}else if (page == 1){
-			text = game.add.text(game.world.width/2,game.world.height/3, "		The objective is to add up numbers in a chain to create a perfect square (4, 9, 16, etc).\n\n Add numbers to your chain with ENTER and W/A/S/D. Press ESC to cancel your chain.\n\nYour chain normally has a maximum of 5 tiles but you can increase it every time you get 5 perfect squares.", {font: SIZEMAP['body']*game.world.width+'px TestFont', fill: '#ffffff', wordWrap: true, wordWrapWidth: game.world.width});
+			text = game.add.text(game.world.width/2,game.world.height/3, "		The objective is to add up numbers in a chain to create a perfect square (4, 9, 16, etc) before time runs out!\n\n Add numbers to your chain with ENTER and W/A/S/D. Press ESC to cancel your chain.\n\nYour chain has a maximum of 7 so be careful with what numbers you combine!", {font: SIZEMAP['body']*game.world.width+'px TestFont', fill: '#ffffff', wordWrap: true, wordWrapWidth: game.world.width});
 			text.anchor.setTo(0.5,0.5);
 			textLayer.addChild(text);
 			game.input.keyboard.removeKey(Phaser.Keyboard.SPACEBAR);
 		}else if (page == 2){
-			text = game.add.text(game.world.width/2,game.world.height/4, "When you get a perfect square, the all the tiles in the chain will be replaced with one number higher than the perfect square achieved. Use this to set up your strategy! Try matching 4's now to make 16.", {font: SIZEMAP['body']*game.world.width+'px TestFont', fill: '#ffffff', wordWrap: true, wordWrapWidth: game.world.width});
+			text = game.add.text(game.world.width/2,game.world.height/4, "When you get a perfect square, all the tiles in the chain will be replaced with other random numbers and you get extra time. You get more points if your chain is longer and the perfect square is larger!\n\n Try matching 4's now to make 16.", {font: SIZEMAP['body']*game.world.width+'px TestFont', fill: '#ffffff', wordWrap: true, wordWrapWidth: game.world.width});
 			text.anchor.setTo(0.5,0.5);
 			textLayer.addChild(text);
 
@@ -128,12 +129,6 @@ TutorialZen.prototype = {
 			this.enableGame();
 
 			this.spawnBoard(3);
-		}else if (page == 3){
-			text = game.add.text(game.world.width/2,game.world.height/4, "One more thing: Your chain must have at least one less than the perfect square's root. So you wouldn't be able to match any of these 12's for 36 because you would need a length of at least 5.", {font: SIZEMAP['body']*game.world.width+'px TestFont', fill: '#ffffff', wordWrap: true, wordWrapWidth: game.world.width});
-			text.anchor.setTo(0.5,0.5);
-			textLayer.addChild(text);
-
-			this.spawnBoard(11);
 		}
 	},
 	clearBlocks: function(){
@@ -159,6 +154,10 @@ TutorialZen.prototype = {
 
 				//enable the thing to move on
 				//show continue button
+				text = game.add.text(game.world.width/2,board1.y+board1.height+game.world.width*0.1, "Good work! Press Space to start the game!", {font: SIZEMAP['body']*game.world.width+'px TestFont', fill: '#ffffff', wordWrap: true, wordWrapWidth: game.world.width});
+				text.anchor.setTo(0.5,0.5);
+				textLayer.addChild(text);
+				game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).onDown.add(this.startGame, this);	
 			}
 		}
 		holder = [];
@@ -329,6 +328,3 @@ TutorialZen.prototype = {
 		block.tint = SELECTED;
 	},
 }
-
-game.state.add('Tutorial', Tutorial);
-game.state.start('Tutorial');

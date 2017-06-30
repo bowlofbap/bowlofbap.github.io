@@ -1,6 +1,4 @@
-
-
-var game = new Phaser.Game(600, 800, Phaser.AUTO,'',null,true), TutorialZen = function() {
+TutorialZen = function() {
 	screenWidth = 600;
 	screenHeight = 800;
 	pageNumber = 0;
@@ -26,13 +24,14 @@ var game = new Phaser.Game(600, 800, Phaser.AUTO,'',null,true), TutorialZen = fu
 	 SELECTED = 0x404040;
 	 DESELECTED = 0xFFFFFF;
 
+	COLORMAP = [];
 
 };
 
 TutorialZen.prototype = {
 	preload: function(){ 
 		//Phaser.Canvas.setImageRenderingCrisp(this.game.canvas)  
-		 game.load.script('GameState',  'JS/main.js');
+		 game.load.script('Zen',  'JS/zen.js');
    	},
 	create: function(){
 		game.input.keyboard.addKey(Phaser.Keyboard.RIGHT).onDown.add(this.rightFunction, this);
@@ -59,8 +58,8 @@ TutorialZen.prototype = {
 	},
 
 	startGame: function(){
-				game.state.add("GameState",GameState);
-			    game.state.start("GameState");
+				game.state.add("Zen",Zen);
+			    game.state.start("Zen");
 	},
 
 	rightFunction: function(){
@@ -120,7 +119,7 @@ TutorialZen.prototype = {
 			textLayer.addChild(text);
 			game.input.keyboard.removeKey(Phaser.Keyboard.SPACEBAR);
 		}else if (page == 2){
-			text = game.add.text(game.world.width/2,game.world.height/4, "When you get a perfect square, the all the tiles in the chain will be replaced with one number higher than the perfect square achieved. Use this to set up your strategy! Try matching 4's now to make 16.", {font: SIZEMAP['body']*game.world.width+'px TestFont', fill: '#ffffff', wordWrap: true, wordWrapWidth: game.world.width});
+			text = game.add.text(game.world.width/2,game.world.height/4, "When you get a perfect square, all the tiles in the chain will be replaced with one number higher than the perfect square achieved. Use this to set up your strategy! The higher the chain number and perfect square, the more point you'll earn.\n\nTry matching 4's now to make 16.", {font: SIZEMAP['body']*game.world.width+'px TestFont', fill: '#ffffff', wordWrap: true, wordWrapWidth: game.world.width});
 			text.anchor.setTo(0.5,0.5);
 			textLayer.addChild(text);
 
@@ -337,6 +336,3 @@ TutorialZen.prototype = {
 		block.tint = SELECTED;
 	},
 }
-
-game.state.add('TutorialZen', TutorialZen);
-game.state.start('TutorialZen');
