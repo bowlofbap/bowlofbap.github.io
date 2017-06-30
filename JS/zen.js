@@ -32,10 +32,9 @@ var Zen = function() {
 		'title' : 0.125,
 		'labels' : 0.06
 	}
+	COLORMAP = [];
 };
 
-
-let COLORMAP = [];
 
 /*)
 let COLORMAP = {

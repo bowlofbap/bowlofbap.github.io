@@ -35,10 +35,8 @@ var GameState = function() {
 		'labels' : 0.06,
 		'endScreen' : 0.085
 	}
+	COLORMAP = [];
 };
-
-
-let COLORMAP = [];
 
 /*)
 let COLORMAP = {
