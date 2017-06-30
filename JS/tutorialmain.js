@@ -24,6 +24,7 @@ TutorialMain = function() {
 	 SELECTED = 0x404040;
 	 DESELECTED = 0xFFFFFF;
 
+	COLORMAP = [];
 
 };
 
