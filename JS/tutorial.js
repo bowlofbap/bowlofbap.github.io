@@ -79,7 +79,7 @@ Tutorial.prototype = {
 	},
 	showPage: function(page){
 		if (page == 0){
-			text = game.add.text(game.world.width/2,game.world.height/2, "Welcome to Squares!\nPress ⇨ or D to Continue", {font: SIZEMAP['title']*game.world.width+'px TestFont', fill: '#ffffff', wordWrap: true, wordWrapWidth: game.world.width});
+			text = game.add.text(game.world.width/2,game.world.height/4, "Welcome to Squares!\nPress ⇨ or D to Continue", {font: SIZEMAP['title']*game.world.width+'px TestFont', fill: '#ffffff', wordWrap: true, wordWrapWidth: game.world.width});
 			text.anchor.setTo(0.5,0.5);
 			textLayer.addChild(text);
 		}else if (page == 1){
