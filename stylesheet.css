@@ -11,7 +11,8 @@ body{
 .fontPreload{    position:absolute;    left:-100px;}
 
 canvas{
-	margin-top: -40vh;
+	margin: auto;
+	margin-top: 10vh;
 }
 
 
@@ -19,9 +20,8 @@ h1{
 	margin:auto;
 	margin-top: 10vh;
 	font-family:TestFont;
-	font-size: 500%;
+	font-size: 50%;
 	color:snow;
-	text-align: center;
 }
 
 #current{
