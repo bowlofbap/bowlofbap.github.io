@@ -188,8 +188,14 @@ GameState.prototype = {
 		text = game.add.text(game.world.width/2,game.world.height/4, "Your score was: "+totalScore+"\n\nPress Space or Enter to play again!", {font: SIZEMAP['endScreen']*game.world.width+'px TestFont', fill: '#ffffff', wordWrap: true, wordWrapWidth: game.world.width});
 		text.anchor.setTo(0.5,0.5);
 		endScreen.addChild(text);
-		game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).onDown.add(function(){this.restartGameState(); game.state.restart();},this);
-		game.input.keyboard.addKey(Phaser.Keyboard.ENTER).onDown.add(function(){this.restartGameState(); game.state.restart();},this);
+		game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).onDown.add(function(){
+			this.restartGameState(); game.state.restart();
+		},
+		this);
+		game.input.keyboard.addKey(Phaser.Keyboard.ENTER).onDown.add(function(){
+			this.restartGameState(); game.state.restart();
+		},
+		this);
 	},
 	restartGameState: function(){
 		 choosing = false;
